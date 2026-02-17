@@ -144,7 +144,7 @@ return this;
         } catch (Exception e1) { }
 
         try {
-            // Try by description
+
             WebElement button = DriverManager.getDriver().findElement(
                     AppiumBy.androidUIAutomator(
                             "new UiSelector().description(\"" + buttonName + "\")"
@@ -155,7 +155,7 @@ return this;
         } catch (Exception e2) { }
 
         try {
-            // Try by text contains
+
             WebElement button = DriverManager.getDriver().findElement(
                     AppiumBy.androidUIAutomator(
                             "new UiSelector().textContains(\"" + buttonName + "\")"
@@ -179,7 +179,7 @@ return this;
     }
     public CreateTaskPage waitForMainPage() {
         try {
-            // Wait for the Create Task button to be visible again (means we're on main page)
+
             WebDriverWait wait = new WebDriverWait(
                     DriverManager.getDriver(),
                     Duration.ofSeconds(5)
@@ -202,10 +202,6 @@ return this;
     }
 
 
-
-
-
-
     public CreateTaskPage printTaskList() {
         List<WebElement> tasks = getAllCheckboxes();
 
@@ -213,36 +209,30 @@ return this;
         for (int i = 0; i < tasks.size(); i++) {
             boolean completed = isCheckboxCheckedAtIndex(i);
             String status = completed ? "☑" : "☐";
-            System.out.println(status + " " + (i + 1) + ". " + tasks.get(i));
+
         }
-        System.out.println();
 
         return this;
     }
 
 
 
-
-
     public CreateTaskPage clickCheckboxAtIndex(int index) {
         try {
-            System.out.println("  → Attempting to click checkbox at index " + index);
+
 
             WebElement checkbox = DriverManager.getDriver().findElement(
                     AppiumBy.androidUIAutomator(
                             "new UiSelector().className(\"android.widget.CheckBox\").instance(" + index + ")"
                     )
             );
-
-            // Use tap/click from BasePage
             click(checkbox);
 
-            // Wait for state change
+
             Thread.sleep(800);
 
-            System.out.println("  ✓ Clicked checkbox at index " + index);
         } catch (Exception e) {
-            System.out.println("  ✗ Error clicking checkbox at index " + index + ": " + e.getMessage());
+
         }
         return this;
     }
@@ -258,58 +248,47 @@ return this;
             String checked = checkbox.getAttribute("checked");
             String enabled = checkbox.getAttribute("enabled");
 
-            System.out.println("  Checkbox " + index + " - checked: " + checked + ", enabled: " + enabled);
 
             return "true".equals(checked);
         } catch (Exception e) {
-            System.out.println("  Error checking checkbox at index " + index + ": " + e.getMessage());
+
             return false;
         }
     }
 
-    /**
-     * Complete the first N tasks by clicking the first N checkboxes
-     */
     public CreateTaskPage completeFirstNTasks(int n) {
 
 
-        // Get all checkboxes on screen
         List<WebElement> allCheckboxes = getAllCheckboxes();
         int totalCheckboxes = allCheckboxes.size();
 
 
 
-        // Click only the first N checkboxes
+
         int checkboxesToClick = Math.min(n, totalCheckboxes);
 
         for (int i = 0; i < checkboxesToClick; i++) {
-            System.out.println("\nCheckbox " + (i + 1) + ":");
+
 
             try {
-                // Get checkbox at position i
+
                 WebElement checkbox = allCheckboxes.get(i);
 
-                // Check current state
                 String checkedBefore = checkbox.getAttribute("checked");
-                System.out.println("  Before: " + (checkedBefore.equals("true") ? "☑ CHECKED" : "☐ unchecked"));
 
-                // Click it
-                System.out.println("  → Clicking...");
                 checkbox.click();
 
-                // Wait for animation/state change
                 Thread.sleep(700);
 
-                // Refresh element reference (in case DOM updated)
                 allCheckboxes = getAllCheckboxes();
                 checkbox = allCheckboxes.get(i);
 
-                // Check new state
+
                 String checkedAfter = checkbox.getAttribute("checked");
-                System.out.println("  After: " + (checkedAfter.equals("true") ? "☑ CHECKED ✓" : "☐ unchecked ✗"));
+
 
             } catch (Exception e) {
-                System.out.println("  ✗ Error clicking checkbox: " + e.getMessage());
+
                 e.printStackTrace();
             }
         }
@@ -323,22 +302,18 @@ return this;
 
         for (WebElement checkbox : checkboxes) {
             try {
-                // Check if this checkbox is checked
+
                 if ("true".equals(checkbox.getAttribute("checked"))) {
-                    completedCount++;  // Count it if checked
+                    completedCount++;
                 }
             } catch (Exception e) {
-                // Ignore errors
+
             }
         }
 
 
-        return completedCount;  // Return total number of checked checkboxes
+        return completedCount;
     }
-
-    /**
-     * Complete random tasks with scroll support
-     */
     public CreateTaskPage completeRandomTasks(int count) {
         int totalTasks = getTaskCount();
         count = Math.min(count, totalTasks);
@@ -351,7 +326,7 @@ return this;
             }
         }
 
-        System.out.println("Random indices selected: " + randomIndices);
+
 
         for (int index : randomIndices) {
 
