@@ -38,4 +38,3 @@ Feature: Dynamic Task Completion
       | count |
       | 5   |
 
-    

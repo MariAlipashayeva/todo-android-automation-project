@@ -44,7 +44,7 @@ public class CreateTaskStepDef {
     }
 
     @And("the user clicks {string} button")
-    public void theUserClicksButton(String buttonName) {  // ✓ FIXED: Added parameter
+    public void theUserClicksButton(String buttonName) {
         createTaskPage.pressBackButton();
     }
 
@@ -63,38 +63,28 @@ public class CreateTaskStepDef {
     @When("the user creates the following tasks:")
     public void theUserCreatesTheFollowingTasks(List<List<String>> tasks) {
         int totalTasks = tasks.size() - 1;
-        System.out.println("\n╔════════════════════════════════════════════════╗");
-        System.out.println("  Starting to create " + totalTasks + " tasks");
-        System.out.println("╚════════════════════════════════════════════════╝\n");
+
 
         for (int i = 1; i < tasks.size(); i++) {
             List<String> row = tasks.get(i);
             String title = row.get(0);
             String description = row.get(1);
 
-            System.out.println("Task " + i + "/" + totalTasks + ": " + title);
+            createTaskPage.startCreateTask()
+                    .enterTitle(title)
+                    .enterText(description)
+                    .submitTask();
 
-            // Complete task creation flow
-            createTaskPage.startCreateTask()      // Click "+" button (instance 1)
-                    .enterTitle(title)        // Enter title
-                    .enterText(description)   // Enter description
-                    .submitTask();            // Submit
 
-            // Verify success message
             String message = createTaskPage.getMessage();
             Assert.assertEquals("Task added", message);
 
-            System.out.println("✓ Task created successfully");
 
-            // Wait for main page to load
             createTaskPage.waitForMainPage();
 
-            System.out.println();
         }
 
-        System.out.println("╔════════════════════════════════════════════════╗");
-        System.out.println("  ✓ All " + totalTasks + " tasks created successfully!");
-        System.out.println("╚════════════════════════════════════════════════╝\n");
+
     }
     @Then("all tasks should be created successfully")
     public void allTasksShouldBeCreatedSuccessfully() {
@@ -105,10 +95,8 @@ public class CreateTaskStepDef {
     @Given("the user has tasks in the list")
     public void theUserHasTasksInTheList() {
         int taskCount = createTaskPage.getTaskCount();
-        System.out.println("User has " + taskCount + " tasks in the list");
-        Assert.assertTrue("No tasks found in the list", taskCount > 0);
 
-        // Print current task list
+        Assert.assertTrue("No tasks found in the list", taskCount > 0);
         createTaskPage.printTaskList();
     }
 }
